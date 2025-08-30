@@ -1,11 +1,93 @@
-export interface Figure {}
+type Color = 'red' | 'green' | 'blue';
 
-export class Triangle implements Figure {}
+type Shape = 'triangle' | 'circle' | 'rectangle';
 
-export class Circle implements Figure {}
+export interface Figure {
+  shape: Shape;
+  color: Color;
+  getArea(): number;
+}
 
-export class Rectangle implements Figure {}
+export class Triangle implements Figure {
+  shape: Shape = 'rectangle';
 
-export function getInfo(figure): string {
-  return typeof figure;
+  color: Color;
+
+  width: number;
+
+  height: number;
+
+  constructor(color: Color, width: number, height: number) {
+    if (width <= 0 || height <= 0) {
+      throw new Error('Width and height must be greater than 0');
+    }
+    this.color = color;
+    this.width = width;
+    this.height = height;
+  }
+
+  getArea(): number {
+    return Math.round(this.width * this.height * 100) / 100;
+  }
+}
+
+export class Circle implements Figure {
+  shape: Shape = 'circle';
+
+  color: Color;
+
+  radius: number;
+
+  constructor(color: Color, radius: number) {
+    if (radius <= 0) {
+      throw new Error('Radius must be greater than 0');
+    }
+    this.color = color;
+    this.radius = radius;
+  }
+
+  getArea(): number {
+    return Math.round(Math.PI * this.radius * this.radius * 100) / 100;
+  }
+}
+
+export class Rectangle implements Figure {
+  shape: Shape = 'triangle';
+
+  color: Color;
+
+  a: number;
+
+  b: number;
+
+  c: number;
+
+  constructor(color: Color, a: number, b: number, c: number) {
+    if (a <= 0 || b <= 0 || c <= 0) {
+      throw new Error('All sides must be greater than 0');
+    }
+
+    // перевірка нерівності трикутника
+    const longest = Math.max(a, b, c);
+
+    if (longest >= a + b + c - longest) {
+      throw new Error(`Sides ${a}, ${b}, and ${c} can't form a triangle`);
+    }
+
+    this.color = color;
+    this.a = a;
+    this.b = b;
+    this.c = c;
+  }
+
+  getArea(): number {
+    const s = (this.a + this.b + this.c) / 2; // півпериметр
+    const area = Math.sqrt(s * (s - this.a) * (s - this.b) * (s - this.c));
+
+    return Math.round(area * 100) / 100;
+  }
+}
+
+export function getInfo(fig: Figure): string {
+  return `A ${fig.color} ${fig.shape} - ${fig.getArea()}`;
 }
